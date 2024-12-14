@@ -35,8 +35,8 @@ export const useTimer = ({ initialSettings }: UseTimerProps = {}) => {
     if (isRunning && !isTransitioning) {
       intervalId = window.setInterval(() => {
         setTime((prevTime) => {
-          // Play tick sound at the start of each second during round time
-          if (!isResting && prevTime > 0) {
+          // Play tick sound for specific seconds
+          if (!isResting && [11, 10, 9, 8, 7, 6, 5, 4, 3, 2].includes(prevTime)) {
             playTickSound();
           }
 
