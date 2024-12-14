@@ -12,10 +12,15 @@ A minimalist countdown timer application built with React, TypeScript, and Tailw
 ## Features
 
 - Countdown timer with minutes and seconds
-- Rest timer functionality
-- Preset time buttons (4m-10m)
-- Sound notifications
-- Responsive design
+- Rest timer functionality with customizable rest periods
+- Preset time buttons (4m-10m) for quick access
+- Sound notifications for timer completion
+- Responsive design with mobile support
+- Interactive time input with arrow controls
+- Visual feedback for active states
+- Keyboard shortcuts for common actions
+- Automatic rest timer transitions
+- Clean, minimalist UI design
 
 ## Scripts
 
@@ -31,11 +36,29 @@ A minimalist countdown timer application built with React, TypeScript, and Tailw
 - Vite
 - Tailwind CSS
 - ESLint
+- Custom React Hooks for timer and sound management
 
 ## Usage
 
-- Click preset buttons for quick timer setup
+- Click preset buttons for quick timer setup (4-10 minutes)
 - Click numbers to manually input time
-- Use arrows to adjust time
-- Blue color indicates rest period
-- Sound plays when timer completes
+- Use up/down arrows to adjust time in 1-minute increments
+- Toggle rest timer mode for break periods
+- Customize rest period duration
+- Blue color theme indicates active rest period
+- Sound notification plays when timer completes
+- Timer automatically transitions to rest period when enabled
+
+## Component Structure
+
+- `Timer` - Main timer container component
+- `TimerDisplay` - Displays current time and handles time input
+- `TimerControls` - Contains timer control buttons and rest timer toggle
+- `ControlButtons` - Play, pause, and reset controls
+- `PresetTimes` - Quick access time preset buttons
+- `RestTimeControls` - Rest timer duration controls and toggle
+
+## Custom Hooks
+
+- `useTimer` - Core timer logic and state management
+- `useSound` - Sound notification management
