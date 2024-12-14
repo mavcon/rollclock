@@ -90,7 +90,7 @@ const Timer: React.FC = () => {
               </button>
             </div>
 
-            <div className="font-mono text-[28vw] sm:text-[32vw] font-bold leading-[0.65] flex items-center">
+            <div className="font-mono text-[28vw] sm:text-[32vw] font-bold leading-none flex items-center">
               <div className="flex items-center">
                 {isEditingMinutes && !isRunning ? (
                   <input
@@ -99,7 +99,7 @@ const Timer: React.FC = () => {
                     value={Math.floor(time / 60)}
                     onChange={(e) => updateTime('minutes', e.target.value)}
                     onBlur={() => setIsEditingMinutes(false)}
-                    className={`w-[28vw] sm:w-[32vw] bg-transparent text-center outline-none font-mono text-[28vw] sm:text-[32vw] font-bold leading-[0.65] p-0 m-0 box-content h-[0.65em] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+                    className={`w-[28vw] sm:w-[32vw] bg-transparent text-center outline-none font-mono text-[28vw] sm:text-[32vw] font-bold leading-none p-0 m-0 box-content h-[1em] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                       isResting ? 'text-blue-300' : 'text-app-text-primary-light dark:text-app-text-primary-dark'
                     }`}
                     min="0"
@@ -117,7 +117,7 @@ const Timer: React.FC = () => {
                   </span>
                 )}
               </div>
-              <span className={isResting ? 'text-blue-300' : ''}>:</span>
+              <span className={`flex items-center self-center mx-2 -mt-4 ${isResting ? 'text-blue-300' : ''}`}>:</span>
               <div className="flex items-center">
                 {isEditingSeconds && !isRunning ? (
                   <input
@@ -126,7 +126,7 @@ const Timer: React.FC = () => {
                     value={time % 60}
                     onChange={(e) => updateTime('seconds', e.target.value)}
                     onBlur={() => setIsEditingSeconds(false)}
-                    className={`w-[28vw] sm:w-[32vw] bg-transparent text-center outline-none font-mono text-[28vw] sm:text-[32vw] font-bold leading-[0.65] p-0 m-0 box-content h-[0.65em] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+                    className={`w-[28vw] sm:w-[32vw] bg-transparent text-center outline-none font-mono text-[28vw] sm:text-[32vw] font-bold leading-none p-0 m-0 box-content h-[1em] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                       isResting ? 'text-blue-300' : 'text-app-text-primary-light dark:text-app-text-primary-dark'
                     }`}
                     min="0"
