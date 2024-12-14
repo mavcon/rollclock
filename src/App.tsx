@@ -1,7 +1,8 @@
-import Timer from './Timer'
+import React from 'react';
+import Timer from './Timer';
 
-function App() {
-  return <Timer />
-}
+const App: React.FC = () => (
+  <Timer />
+);
 
-export default App
+export default App;
