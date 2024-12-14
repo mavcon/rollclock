@@ -56,11 +56,22 @@ export interface OscillatorConfig {
   gain: number;
 }
 
+export type OscillatorDescription = 
+  | 'Deep bass' 
+  | 'Mid tone' 
+  | 'Sharp high' 
+  | 'Extra bite'
+  | 'Base tone'
+  | 'Harmonic'
+  | 'High harmonic';
+
 export interface BuzzerOscillatorConfig extends OscillatorConfig {
-  description: 'Deep bass' | 'Mid tone' | 'Sharp high' | 'Extra bite';
+  description: OscillatorDescription;
 }
 
 export interface SoundHook {
   playBuzzerSound: () => void;
   playTickSound: () => void;
+  playRestBeepSound: () => void;
+  playRestRingSound: () => void;
 }

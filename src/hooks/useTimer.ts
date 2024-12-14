@@ -22,7 +22,7 @@ export const useTimer = ({ initialSettings }: UseTimerProps = {}) => {
         };
   });
 
-  const { playBuzzerSound, playTickSound } = useSound();
+  const { playBuzzerSound, playTickSound, playRestBeepSound, playRestRingSound } = useSound();
   const isLastTenSeconds = time <= 10 && time > 0;
 
   useEffect(() => {
@@ -35,12 +35,14 @@ export const useTimer = ({ initialSettings }: UseTimerProps = {}) => {
     if (isRunning && !isTransitioning) {
       intervalId = window.setInterval(() => {
         setTime((prevTime) => {
-          // Play tick sound for specific seconds
+          // Play sounds for countdown
           if (!isResting && [11, 10, 9, 8, 7, 6, 5, 4, 3, 2].includes(prevTime)) {
             playTickSound();
+          } else if (isResting && [11, 10, 9, 8, 7, 6, 5, 4, 3, 2].includes(prevTime)) {
+            playRestBeepSound();
           }
 
-          // Play buzzer exactly at 0 for round time
+          // Play end sounds
           if (prevTime === 1) {
             if (!isResting) {
               playBuzzerSound();
@@ -51,12 +53,13 @@ export const useTimer = ({ initialSettings }: UseTimerProps = {}) => {
                 setIsTransitioning(false);
               }, 950); // Just before buzzer ends
             } else {
+              playRestRingSound();
               setIsTransitioning(true);
               setTimeout(() => {
                 setIsResting(false);
                 setTime(settings.roundMinutes * 60 + settings.roundSeconds);
                 setIsTransitioning(false);
-              }, 100); // Quick transition for rest round
+              }, 1500); // After rest ring sound ends
             }
           }
           
@@ -70,7 +73,7 @@ export const useTimer = ({ initialSettings }: UseTimerProps = {}) => {
         window.clearInterval(intervalId);
       }
     };
-  }, [isRunning, isResting, settings, isTransitioning, playBuzzerSound, playTickSound]);
+  }, [isRunning, isResting, settings, isTransitioning, playBuzzerSound, playTickSound, playRestBeepSound, playRestRingSound]);
 
   // Only initialize time when settings change and we're not running
   useEffect(() => {
@@ -157,7 +160,7 @@ export const useTimer = ({ initialSettings }: UseTimerProps = {}) => {
     if (isRunning) return;
     setSettings(prev => ({
       ...prev,
-      restMinutes: Math.max(0, Math.round((prev.restMinutes + (increment ? 0.1 : -0.1)) * 10) / 10)
+      restMinutes: Math.max(0, Math.round((prev.restMinutes + (increment ? 0.5 : -0.5)) * 2) / 2)
     }));
   };
 
@@ -166,7 +169,7 @@ export const useTimer = ({ initialSettings }: UseTimerProps = {}) => {
     const numValue = parseFloat(value) || 0;
     setSettings(prev => ({
       ...prev,
-      restMinutes: Math.max(0, Math.round(numValue * 10) / 10)
+      restMinutes: Math.max(0, Math.round(numValue * 2) / 2)
     }));
   };
 

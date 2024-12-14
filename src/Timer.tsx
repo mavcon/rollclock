@@ -45,12 +45,12 @@ const Timer: React.FC = () => {
         <PresetTimes
           presetTimes={presetTimes}
           currentMinutes={settings.roundMinutes}
-          isDisabled={isResting || isRunning}
+          isDisabled={false}
           onSelect={setPresetTime}
         />
 
         {/* Timer Display */}
-        <div className="text-center animate-slide-up mb-2">
+        <div className="text-center animate-slide-up mb-2 relative z-10">
           <div className={`inline-block px-3 py-0.5 rounded-[4px] text-sm font-medium mb-1 transition-colors ${
             isResting
               ? "bg-blue-300/20 text-blue-300"
@@ -104,8 +104,8 @@ const Timer: React.FC = () => {
           </div>
         </div>
 
-        {/* Control Buttons and Rest Time Input */}
-        <div className="flex gap-1 animate-slide-up [animation-delay:300ms] mt-1">
+        {/* Control Buttons and Rest Time Input - Added z-50 to match preset buttons */}
+        <div className="flex gap-1 animate-slide-up [animation-delay:300ms] mt-1 relative z-50">
           <RestTimeControls
             value={settings.restMinutes}
             isDisabled={isRunning}

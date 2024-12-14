@@ -1,6 +1,21 @@
 import React from 'react';
 import { RestTimeControlsProps } from '../../types/timer';
 
+const formatRestTime = (minutes: number): string => {
+  if (minutes < 1) {
+    return `${minutes * 60}s`;
+  }
+  return minutes % 1 === 0 ? `${minutes}m` : `${minutes}m`;
+};
+
+const parseRestTime = (value: string): string => {
+  const numericValue = value.replace(/[ms]/g, '');
+  if (value.endsWith('s')) {
+    return (parseInt(numericValue) / 60).toString();
+  }
+  return numericValue;
+};
+
 export const RestTimeControls: React.FC<RestTimeControlsProps> = ({
   value,
   isDisabled,
@@ -17,13 +32,11 @@ export const RestTimeControls: React.FC<RestTimeControlsProps> = ({
       {'\u25B2'}
     </button>
     <input
-      type="number"
-      value={value}
+      type="text"
+      value={formatRestTime(value)}
       disabled={isDisabled}
-      onChange={(e) => onChange(e.target.value)}
-      className="w-12 text-lg sm:text-xl text-center bg-transparent outline-none transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none disabled:opacity-50"
-      min="0"
-      step="0.1"
+      onChange={(e) => onChange(parseRestTime(e.target.value))}
+      className="w-16 text-lg sm:text-xl text-center bg-transparent outline-none transition-colors disabled:opacity-50"
     />
     <button
       onClick={onDecrement}
