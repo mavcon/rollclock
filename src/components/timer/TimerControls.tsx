@@ -11,14 +11,14 @@ export const TimerControls: React.FC<TimerControlsProps> = ({
     <button
       onClick={onIncrement}
       disabled={disabled}
-      className="text-[3vw] sm:text-[3.5vw] text-app-text-secondary hover:text-app-text-primary transition-colors disabled:opacity-50 leading-none"
+      className="text-[3vw] sm:text-[3.5vw] text-app-text-secondary-light dark:text-app-text-secondary-dark hover:text-app-text-primary-light dark:hover:text-app-text-primary-dark transition-colors disabled:opacity-50 leading-none"
     >
       ▲
     </button>
     <button
       onClick={onDecrement}
       disabled={disabled}
-      className="text-[3vw] sm:text-[3.5vw] text-app-text-secondary hover:text-app-text-primary transition-colors disabled:opacity-50 leading-none"
+      className="text-[3vw] sm:text-[3.5vw] text-app-text-secondary-light dark:text-app-text-secondary-dark hover:text-app-text-primary-light dark:hover:text-app-text-primary-dark transition-colors disabled:opacity-50 leading-none"
     >
       ▼
     </button>

@@ -4,21 +4,40 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        'app-bg': '#0F172A',
-        'app-card': '#1E293B',
-        'app-hover': '#334155',
-        'app-text-primary': '#F8FAFC',
-        'app-text-secondary': '#94A3B8',
+        'app-bg': {
+          light: '#F8FAFC',
+          dark: '#0F172A'
+        },
+        'app-card': {
+          light: '#E2E8F0',
+          dark: '#1E293B'
+        },
+        'app-hover': {
+          light: '#CBD5E1',
+          dark: '#334155'
+        },
+        'app-text-primary': {
+          light: '#0F172A',
+          dark: '#F8FAFC'
+        },
+        'app-text-secondary': {
+          light: '#64748B',
+          dark: '#94A3B8'
+        },
         'app-accent-primary': '#8B5CF6',
         'app-accent-secondary': '#A78BFA',
         'app-success-primary': '#22C55E',
         'app-success-hover': '#16A34A',
         'app-danger-primary': '#EF4444',
         'app-danger-hover': '#DC2626',
-        'app-border': '#475569',
+        'app-border': {
+          light: '#CBD5E1',
+          dark: '#475569'
+        },
       },
       fontSize: {
         'timer': '20rem',

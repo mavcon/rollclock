@@ -48,8 +48,13 @@ export const useTimer = ({ initialSettings }: UseTimerProps = {}) => {
               playBuzzerSound();
               setIsTransitioning(true);
               setTimeout(() => {
-                setIsResting(true);
-                setTime(Math.round(settings.restMinutes * 60));
+                // If rest time is 0, loop back to round time
+                if (settings.restMinutes === 0) {
+                  setTime(settings.roundMinutes * 60 + settings.roundSeconds);
+                } else {
+                  setIsResting(true);
+                  setTime(Math.round(settings.restMinutes * 60));
+                }
                 setIsTransitioning(false);
               }, 950); // Just before buzzer ends
             } else {

@@ -40,6 +40,8 @@ export interface RestTimeControlsProps {
   onIncrement: () => void;
   onDecrement: () => void;
   onChange: (value: string) => void;
+  isDarkMode: boolean;
+  onThemeToggle: () => void;
 }
 
 export interface ControlButtonsProps {
