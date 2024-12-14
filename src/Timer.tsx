@@ -13,25 +13,6 @@ interface TimerControlsProps {
   disabled: boolean;
 }
 
-const TimerControls: React.FC<TimerControlsProps> = ({ direction, onIncrement, onDecrement, disabled }) => (
-  <div className="flex flex-col justify-between h-[18.2vw] sm:h-[20.8vw] my-2">
-    <button 
-      onClick={onIncrement}
-      disabled={disabled}
-      className="text-[3vw] sm:text-[3.5vw] text-app-text-secondary hover:text-app-text-primary transition-colors disabled:opacity-50 leading-none"
-    >
-      ▲
-    </button>
-    <button 
-      onClick={onDecrement}
-      disabled={disabled}
-      className="text-[3vw] sm:text-[3.5vw] text-app-text-secondary hover:text-app-text-primary transition-colors disabled:opacity-50 leading-none"
-    >
-      ▼
-    </button>
-  </div>
-);
-
 interface TimerDisplayProps {
   value: number;
   isEditing: boolean;
@@ -46,12 +27,31 @@ interface TimerDisplayProps {
   isSeconds?: boolean;
 }
 
-const TimerDisplay: React.FC<TimerDisplayProps> = ({ 
-  value, 
-  isEditing, 
-  onEdit, 
-  onEditStart, 
-  onEditEnd, 
+const TimerControls: React.FC<TimerControlsProps> = ({ direction, onIncrement, onDecrement, disabled }) => (
+  <div className="flex flex-col justify-between h-[18.2vw] sm:h-[20.8vw] my-2">
+    <button
+      onClick={onIncrement}
+      disabled={disabled}
+      className="text-[3vw] sm:text-[3.5vw] text-app-text-secondary hover:text-app-text-primary transition-colors disabled:opacity-50 leading-none"
+    >
+      ▲
+    </button>
+    <button
+      onClick={onDecrement}
+      disabled={disabled}
+      className="text-[3vw] sm:text-[3.5vw] text-app-text-secondary hover:text-app-text-primary transition-colors disabled:opacity-50 leading-none"
+    >
+      ▼
+    </button>
+  </div>
+);
+
+const TimerDisplay: React.FC<TimerDisplayProps> = ({
+  value,
+  isEditing,
+  onEdit,
+  onEditStart,
+  onEditEnd,
   isRunning,
   inputRef,
   max,
@@ -75,7 +75,7 @@ const TimerDisplay: React.FC<TimerDisplayProps> = ({
         autoFocus
       />
     ) : (
-      <span 
+      <span
         onClick={() => !isRunning && onEditStart()}
         className={`${!isRunning ? "cursor-text" : ""} ${
           isResting ? 'text-blue-300' : ''
@@ -94,7 +94,7 @@ const Timer: React.FC = () => {
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
   const [isEditingMinutes, setIsEditingMinutes] = useState<boolean>(false);
   const [isEditingSeconds, setIsEditingSeconds] = useState<boolean>(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
   const minutesInputRef = useRef<HTMLInputElement>(null);
   const secondsInputRef = useRef<HTMLInputElement>(null);
   const [settings, setSettings] = useState<TimerSettings>(() => {
@@ -104,34 +104,71 @@ const Timer: React.FC = () => {
       : {
           roundMinutes: 5,
           roundSeconds: 0,
-          restMinutes: 1,
+          restMinutes: 1
         };
   });
 
   const isLastTenSeconds = time <= 10 && time > 0;
 
-  useEffect(() => {
-    audioRef.current = new Audio("/cookedtimer.mp3");
-    audioRef.current.volume = 1.0;
-    return () => {
-      if (audioRef.current) {
-        audioRef.current = null;
-      }
-    };
-  }, []);
-
-  const playSound = () => {
-    if (!audioRef.current) {
-      audioRef.current = new Audio("/cookedtimer.mp3");
-      audioRef.current.volume = 1.0;
+  const playBuzzerSound = () => {
+    if (!audioContextRef.current) {
+      audioContextRef.current = new AudioContext();
     }
-    audioRef.current.currentTime = 0;
-    audioRef.current.play().catch(error => {
-      console.error("Error playing sound:", error);
+    const context = audioContextRef.current;
+    
+    // Create multiple oscillators for a sports buzzer sound
+    const oscillators = [
+      { freq: 150, type: 'square' as OscillatorType },    // Deep bass
+      { freq: 300, type: 'square' as OscillatorType },    // Mid tone
+      { freq: 600, type: 'sawtooth' as OscillatorType },  // Sharp high
+      { freq: 900, type: 'square' as OscillatorType }     // Extra bite
+    ].map(config => {
+      const osc = context.createOscillator();
+      osc.type = config.type;
+      osc.frequency.setValueAtTime(config.freq, context.currentTime);
+      return osc;
+    });
+    
+    const masterGain = context.createGain();
+    masterGain.gain.setValueAtTime(1, context.currentTime); // Maximum volume
+    masterGain.connect(context.destination);
+
+    oscillators.forEach(osc => {
+      const gainNode = context.createGain();
+      gainNode.gain.setValueAtTime(0, context.currentTime);
+      gainNode.gain.linearRampToValueAtTime(1, context.currentTime + 0.01); // Immediate attack
+      gainNode.gain.setValueAtTime(1, context.currentTime + 0.2); // Hold at max
+      gainNode.gain.linearRampToValueAtTime(0, context.currentTime + 0.95); // Release just before transition
+      
+      osc.connect(gainNode);
+      gainNode.connect(masterGain);
+      
+      osc.start(context.currentTime);
+      osc.stop(context.currentTime + 0.95);
     });
   };
 
-  const presetTimes = [4, 5, 6, 7, 8, 10];
+  const playTickSound = () => {
+    if (!audioContextRef.current) {
+      audioContextRef.current = new AudioContext();
+    }
+    const context = audioContextRef.current;
+    
+    const osc = context.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1000, context.currentTime);
+    
+    const gainNode = context.createGain();
+    gainNode.gain.setValueAtTime(0, context.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.1, context.currentTime + 0.01);
+    gainNode.gain.linearRampToValueAtTime(0, context.currentTime + 0.05);
+    
+    osc.connect(gainNode);
+    gainNode.connect(context.destination);
+    
+    osc.start(context.currentTime);
+    osc.stop(context.currentTime + 0.05);
+  };
 
   useEffect(() => {
     localStorage.setItem("timerSettings", JSON.stringify(settings));
@@ -144,7 +181,9 @@ const Timer: React.FC = () => {
       intervalId = window.setInterval(() => {
         setTime((prevTime) => {
           if (prevTime <= 0) {
-            playSound();
+            if (!isResting) {
+              playBuzzerSound(); // Play buzzer once at zero
+            }
             setIsTransitioning(true);
             window.setTimeout(() => {
               if (!isResting) {
@@ -157,6 +196,10 @@ const Timer: React.FC = () => {
               setIsTransitioning(false);
             }, 1000);
             return 0;
+          }
+          // Play tick sound only during round time
+          if (prevTime > 1 && !isResting) {
+            playTickSound();
           }
           return prevTime - 1;
         });
@@ -173,9 +216,8 @@ const Timer: React.FC = () => {
   useEffect(() => {
     if (!isRunning) {
       setTime(settings.roundMinutes * 60 + settings.roundSeconds);
-      setIsResting(false);
     }
-  }, [settings, isRunning]);
+  }, [settings]);
 
   const handleStartStop = () => {
     if (!isRunning && time === 0) {
@@ -192,18 +234,21 @@ const Timer: React.FC = () => {
     setIsResting(false);
   };
 
+  const presetTimes = [4, 5, 6, 7, 8, 10];
+
   const setPresetTime = (minutes: number) => {
-    setSettings({
-      ...settings,
+    if (isRunning) return;
+    setSettings(prev => ({
+      ...prev,
       roundMinutes: minutes,
-      roundSeconds: 0,
-    });
-    handleReset();
+      roundSeconds: 0
+    }));
+    setTime(minutes * 60);
   };
 
   const adjustTime = (type: 'minutes' | 'seconds', increment: boolean) => {
     if (isRunning) return;
-    
+
     setSettings(prev => {
       const newSettings = { ...prev };
       if (type === 'minutes') {
@@ -217,11 +262,11 @@ const Timer: React.FC = () => {
 
   const handleTimeEdit = (type: 'minutes' | 'seconds', value: string) => {
     if (isRunning) return;
-    
+
     const numValue = parseInt(value) || 0;
     setSettings(prev => ({
       ...prev,
-      [type === 'minutes' ? 'roundMinutes' : 'roundSeconds']: 
+      [type === 'minutes' ? 'roundMinutes' : 'roundSeconds']:
         type === 'minutes' ? Math.min(99, Math.max(0, numValue)) : Math.min(59, Math.max(0, numValue))
     }));
   };
@@ -267,8 +312,8 @@ const Timer: React.FC = () => {
         {/* Timer Display */}
         <div className="text-center animate-slide-up mb-2">
           <div className={`inline-block px-3 py-0.5 rounded-[4px] text-sm font-medium mb-1 transition-colors ${
-            isResting 
-              ? "bg-blue-300/20 text-blue-300" 
+            isResting
+              ? "bg-blue-300/20 text-blue-300"
               : "text-app-text-primary"
           }`}>
             {isResting ? "REST TIME" : "ROUND TIME"}
