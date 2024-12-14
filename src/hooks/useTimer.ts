@@ -72,17 +72,14 @@ export const useTimer = ({ initialSettings }: UseTimerProps = {}) => {
     };
   }, [isRunning, isResting, settings, isTransitioning, playBuzzerSound, playTickSound]);
 
+  // Only initialize time when settings change and we're not running
   useEffect(() => {
-    if (!isRunning) {
+    if (!isRunning && !isResting && time === 0) {
       setTime(settings.roundMinutes * 60 + settings.roundSeconds);
     }
-  }, [settings, isRunning]);
+  }, [settings]);
 
   const start = () => {
-    if (!isRunning && time === 0) {
-      setTime(settings.roundMinutes * 60 + settings.roundSeconds);
-      setIsResting(false);
-    }
     setIsRunning(true);
   };
 
@@ -98,13 +95,13 @@ export const useTimer = ({ initialSettings }: UseTimerProps = {}) => {
   };
 
   const setPresetTime = (minutes: number) => {
-    if (isRunning) return;
     setSettings(prev => ({
       ...prev,
       roundMinutes: minutes,
       roundSeconds: 0
     }));
     setTime(minutes * 60);
+    setIsResting(false);
   };
 
   const adjustTime = (type: 'minutes' | 'seconds', increment: boolean) => {
@@ -119,6 +116,19 @@ export const useTimer = ({ initialSettings }: UseTimerProps = {}) => {
       }
       return newSettings;
     });
+
+    // Update time immediately when adjusting
+    if (!isResting) {
+      setTime(prev => {
+        if (type === 'minutes') {
+          const newMinutes = Math.max(0, Math.min(99, Math.floor(prev / 60) + (increment ? 1 : -1)));
+          return newMinutes * 60 + (prev % 60);
+        } else {
+          const newSeconds = Math.max(0, Math.min(59, (prev % 60) + (increment ? 1 : -1)));
+          return Math.floor(prev / 60) * 60 + newSeconds;
+        }
+      });
+    }
   };
 
   const updateTime = (type: 'minutes' | 'seconds', value: string) => {
@@ -130,6 +140,17 @@ export const useTimer = ({ initialSettings }: UseTimerProps = {}) => {
       [type === 'minutes' ? 'roundMinutes' : 'roundSeconds']:
         type === 'minutes' ? Math.min(99, Math.max(0, numValue)) : Math.min(59, Math.max(0, numValue))
     }));
+
+    // Update time immediately when typing
+    if (!isResting) {
+      setTime(prev => {
+        if (type === 'minutes') {
+          return (Math.min(99, Math.max(0, numValue)) * 60) + (prev % 60);
+        } else {
+          return (Math.floor(prev / 60) * 60) + Math.min(59, Math.max(0, numValue));
+        }
+      });
+    }
   };
 
   const adjustRestTime = (increment: boolean) => {
