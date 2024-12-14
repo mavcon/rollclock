@@ -59,7 +59,7 @@ const TimerDisplay: React.FC<TimerDisplayProps> = ({
   isFlashing,
   isSeconds = false
 }) => (
-  <div className="flex items-center my-2">
+  <div className="flex items-center">
     {isEditing ? (
       <input
         ref={inputRef}
@@ -67,7 +67,7 @@ const TimerDisplay: React.FC<TimerDisplayProps> = ({
         value={value}
         onChange={(e) => onEdit(e.target.value)}
         onBlur={onEditEnd}
-        className={`w-[28vw] sm:w-[32vw] bg-transparent text-center outline-none font-mono text-[28vw] sm:text-[32vw] font-bold leading-[0.65] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+        className={`w-[28vw] sm:w-[32vw] bg-transparent text-center outline-none font-mono text-[28vw] sm:text-[32vw] font-bold leading-[0.65] p-0 m-0 box-content h-[0.65em] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
           isResting ? 'text-blue-300' : ''
         }`}
         min="0"
@@ -321,7 +321,7 @@ const Timer: React.FC = () => {
 
         {/* Control Buttons and Rest Time Input */}
         <div className="flex gap-1 animate-slide-up [animation-delay:300ms] mt-1">
-          <div className="bg-app-card rounded-[4px] px-2 py-2 flex items-center gap-2">
+          <div className="bg-app-card rounded-[4px] px-[2vw] py-2 flex items-center gap-[2vw]">
             <button
               onClick={() => adjustRestTime(true)}
               disabled={isRunning}
