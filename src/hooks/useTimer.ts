@@ -35,7 +35,13 @@ export const useTimer = ({ initialSettings }: UseTimerProps = {}) => {
     if (isRunning && !isTransitioning) {
       intervalId = window.setInterval(() => {
         setTime((prevTime) => {
-          if (prevTime <= 0) {
+          // Play tick sound at the start of each second during round time
+          if (!isResting && prevTime > 0) {
+            playTickSound();
+          }
+
+          // Play buzzer exactly at 0 for round time
+          if (prevTime === 1) {
             if (!isResting) {
               playBuzzerSound();
               setIsTransitioning(true);
@@ -52,12 +58,6 @@ export const useTimer = ({ initialSettings }: UseTimerProps = {}) => {
                 setIsTransitioning(false);
               }, 100); // Quick transition for rest round
             }
-            return 0;
-          }
-          
-          // Play tick sound at the start of each second during round time
-          if (!isResting) {
-            playTickSound();
           }
           
           return prevTime - 1;
