@@ -6,6 +6,9 @@ export default {
   ],
   darkMode: 'class',
   theme: {
+    fontFamily: {
+      'sans': ['Roboto', 'sans-serif'],
+    },
     extend: {
       colors: {
         'app-bg': {
