@@ -2,7 +2,6 @@ import React from 'react';
 import { TimerControlsProps } from '../../types/timer';
 
 export const TimerControls: React.FC<TimerControlsProps> = ({
-  direction,
   onIncrement,
   onDecrement,
   disabled

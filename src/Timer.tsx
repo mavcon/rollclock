@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import { TimerControls } from "./components/timer/TimerControls";
 import { TimerDisplay } from "./components/timer/TimerDisplay";
 import { PresetTimes } from "./components/timer/PresetTimes";
 import { RestTimeControls } from "./components/timer/RestTimeControls";
@@ -54,8 +53,8 @@ const Timer: React.FC = () => {
 
   return (
     <div className="w-screen h-screen bg-app-bg-light dark:bg-app-bg-dark text-app-text-primary-light dark:text-app-text-primary-dark">
-      <div className="w-full h-full flex flex-col justify-between p-1">
-        <div>
+      <div className="w-full h-full flex flex-col gap-2 p-1">
+        <div className="flex-1 flex flex-col gap-2">
           <PresetTimes
             presetTimes={presetTimes}
             currentMinutes={settings.roundMinutes}
@@ -64,7 +63,7 @@ const Timer: React.FC = () => {
           />
 
           {/* Timer Display */}
-          <div className="text-center animate-slide-up mb-2">
+          <div className="text-center animate-slide-up">
             <div className={`inline-block px-4 py-1 rounded-[4px] text-[3.4vw] font-medium mb-2 transition-colors ${
               isResting
                 ? "bg-blue-300/20 text-blue-600 dark:text-blue-300"
@@ -90,59 +89,36 @@ const Timer: React.FC = () => {
                 </button>
               </div>
 
-              <div className="font-mono text-[34vw] font-bold leading-[0.6] flex items-center">
-                <div className="flex items-center">
-                  {isEditingMinutes && !isRunning ? (
-                    <input
-                      ref={minutesInputRef}
-                      type="number"
-                      value={Math.floor(time / 60)}
-                      onChange={(e) => updateTime('minutes', e.target.value)}
-                      onBlur={() => setIsEditingMinutes(false)}
-                      className={`w-[34vw] bg-transparent text-center outline-none font-mono text-[34vw] font-bold leading-[0.6] p-0 m-0 box-content h-[1em] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
-                        isResting ? 'text-blue-600 dark:text-blue-300' : 'text-app-text-primary-light dark:text-app-text-primary-dark'
-                      }`}
-                      min="0"
-                      max={99}
-                      autoFocus
-                    />
-                  ) : (
-                    <span
-                      onClick={() => !isRunning && setIsEditingMinutes(true)}
-                      className={`cursor-pointer select-none ${
-                        isResting ? 'text-blue-600 dark:text-blue-300' : 'text-app-text-primary-light dark:text-app-text-primary-dark'
-                      }`}
-                    >
-                      {Math.floor(time / 60).toString().padStart(2, '0')}
-                    </span>
-                  )}
+              <div className="font-mono text-[34vw] font-bold leading-[0.6] flex items-center justify-center flex-grow">
+                <div className="flex-grow flex justify-end">
+                  <TimerDisplay
+                    value={Math.floor(time / 60)}
+                    isEditing={isEditingMinutes}
+                    onEdit={(value) => updateTime('minutes', value)}
+                    onEditStart={() => setIsEditingMinutes(true)}
+                    onEditEnd={() => setIsEditingMinutes(false)}
+                    isRunning={isRunning}
+                    inputRef={minutesInputRef}
+                    max={99}
+                    isResting={isResting}
+                    isFlashing={false}
+                  />
                 </div>
-                <span className={`flex items-center self-center mx-2 -mt-4 ${isResting ? 'text-blue-600 dark:text-blue-300' : ''}`}>:</span>
-                <div className="flex items-center">
-                  {isEditingSeconds && !isRunning ? (
-                    <input
-                      ref={secondsInputRef}
-                      type="number"
-                      value={time % 60}
-                      onChange={(e) => updateTime('seconds', e.target.value)}
-                      onBlur={() => setIsEditingSeconds(false)}
-                      className={`w-[34vw] bg-transparent text-center outline-none font-mono text-[34vw] font-bold leading-[0.6] p-0 m-0 box-content h-[1em] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
-                        isResting ? 'text-blue-600 dark:text-blue-300' : 'text-app-text-primary-light dark:text-app-text-primary-dark'
-                      }`}
-                      min="0"
-                      max={59}
-                      autoFocus
-                    />
-                  ) : (
-                    <span
-                      onClick={() => !isRunning && setIsEditingSeconds(true)}
-                      className={`cursor-pointer select-none ${
-                        isLastTenSeconds ? 'animate-flash' : ''
-                      } ${isResting ? 'text-blue-600 dark:text-blue-300' : 'text-app-text-primary-light dark:text-app-text-primary-dark'}`}
-                    >
-                      {(time % 60).toString().padStart(2, '0')}
-                    </span>
-                  )}
+                <span className={`mx-2 -mt-4 ${isResting ? 'text-blue-600 dark:text-blue-300' : ''}`}>:</span>
+                <div className="flex-grow">
+                  <TimerDisplay
+                    value={time % 60}
+                    isEditing={isEditingSeconds}
+                    onEdit={(value) => updateTime('seconds', value)}
+                    onEditStart={() => setIsEditingSeconds(true)}
+                    onEditEnd={() => setIsEditingSeconds(false)}
+                    isRunning={isRunning}
+                    inputRef={secondsInputRef}
+                    max={59}
+                    isResting={isResting}
+                    isFlashing={isLastTenSeconds}
+                    isSeconds={true}
+                  />
                 </div>
               </div>
 
@@ -164,25 +140,25 @@ const Timer: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Control Buttons and Rest Time Input */}
-        <div className="flex gap-1 animate-slide-up [animation-delay:300ms]">
-          <RestTimeControls
-            value={settings.restMinutes}
-            isDisabled={isRunning}
-            onIncrement={() => adjustRestTime(true)}
-            onDecrement={() => adjustRestTime(false)}
-            onChange={updateRestTime}
-            isDarkMode={isDarkMode}
-            onThemeToggle={() => setIsDarkMode(!isDarkMode)}
-          />
-          <ControlButtons
-            isRunning={isRunning}
-            time={time}
-            onStartStop={handleStartStop}
-            onReset={reset}
-          />
+          
+          {/* Control Buttons and Rest Time Input */}
+          <div className="flex gap-1 animate-slide-up [animation-delay:300ms] w-full mt-4">
+            <RestTimeControls
+              value={settings.restMinutes}
+              isDisabled={isRunning}
+              onIncrement={() => adjustRestTime(true)}
+              onDecrement={() => adjustRestTime(false)}
+              onChange={updateRestTime}
+              isDarkMode={isDarkMode}
+              onThemeToggle={() => setIsDarkMode(!isDarkMode)}
+            />
+            <ControlButtons
+              isRunning={isRunning}
+              time={time}
+              onStartStop={handleStartStop}
+              onReset={reset}
+            />
+          </div>
         </div>
       </div>
     </div>

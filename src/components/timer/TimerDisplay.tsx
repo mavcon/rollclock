@@ -11,8 +11,7 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
   inputRef,
   max,
   isResting,
-  isFlashing,
-  isSeconds = false
+  isFlashing
 }) => {
   const formattedValue = value.toString().padStart(2, '0');
 
@@ -24,7 +23,7 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
         value={value}
         onChange={(e) => onEdit(e.target.value)}
         onBlur={onEditEnd}
-        className={`w-[1.1em] bg-transparent text-center outline-none font-mono text-[28vw] sm:text-[32vw] font-bold leading-[0.65] p-0 m-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+        className={`w-[2ch] bg-transparent text-center outline-none font-mono text-[34vw] font-bold leading-[0.6] p-0 m-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
           isResting ? 'text-blue-300' : 'text-app-text-primary-light dark:text-app-text-primary-dark'
         }`}
         min="0"

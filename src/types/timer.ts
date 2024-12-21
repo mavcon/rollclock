@@ -7,7 +7,6 @@ export interface TimerSettings {
 }
 
 export interface TimerControlsProps {
-  direction: 'left' | 'right';
   onIncrement: () => void;
   onDecrement: () => void;
   disabled: boolean;

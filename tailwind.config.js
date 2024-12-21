@@ -62,5 +62,16 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function({ addUtilities }) {
+      addUtilities({
+        '.timer-input': {
+          'caret-color': 'transparent',
+          '&::selection': {
+            'background-color': 'transparent'
+          }
+        }
+      })
+    }
+  ],
 }
