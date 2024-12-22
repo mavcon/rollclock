@@ -13,23 +13,31 @@ export default {
       colors: {
         'app-bg': {
           light: '#F8FAFC',
-          dark: '#0F172A'
+          dark: '#000000'
         },
         'app-card': {
-          light: '#E2E8F0',
-          dark: '#1E293B'
+          light: '#F1F4F7',
+          dark: '#0F141D'
         },
         'app-hover': {
-          light: '#CBD5E1',
-          dark: '#334155'
+          light: '#E5EAF0',
+          dark: '#1A202A'
         },
         'app-text-primary': {
           light: '#0F172A',
           dark: '#F8FAFC'
         },
+        'app-text-controls': {
+          light: '#878D99',
+          dark: '#A6A6A6'
+        },
+        'app-text-title': {
+          light: '#595959',
+          dark: '#CCCCCC'
+        },
         'app-text-secondary': {
-          light: '#64748B',
-          dark: '#94A3B8'
+          light: '#B2BAC5',
+          dark: '#4A515C'
         },
         'app-accent-primary': '#8B5CF6',
         'app-accent-secondary': '#A78BFA',
@@ -38,8 +46,8 @@ export default {
         'app-danger-primary': '#EF4444',
         'app-danger-hover': '#DC2626',
         'app-border': {
-          light: '#CBD5E1',
-          dark: '#475569'
+          light: '#E5EAF0',
+          dark: '#232B34'
         },
       },
       fontSize: {
