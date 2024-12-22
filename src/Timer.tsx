@@ -1,8 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { TimerDisplay } from "./components/timer/TimerDisplay";
 import { PresetTimes } from "./components/timer/PresetTimes";
-import { RestTimeControls } from "./components/timer/RestTimeControls";
-import { ControlButtons } from "./components/timer/ControlButtons";
 import { useTimer } from "./hooks/useTimer";
 
 const formatRestTime = (minutes: number): string => {
