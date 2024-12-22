@@ -20,7 +20,12 @@ A minimalist countdown timer application built with React, TypeScript, and Tailw
 - Visual feedback for active states
 - Keyboard shortcuts for common actions
 - Automatic rest timer transitions
-- Clean, minimalist UI design
+- Clean, minimalist UI design with light/dark theme support
+- Carefully crafted color scheme:
+  - Light theme: Soft grays for controls and subtle interactions
+  - Dark theme: Pure black background with optimized text contrast (80% white for titles, 65% white for controls)
+  - Theme toggle with yellow sun and blue moon icons
+  - Blue accent color for rest mode
 
 ## Scripts
 
@@ -48,6 +53,7 @@ A minimalist countdown timer application built with React, TypeScript, and Tailw
 - Blue color theme indicates active rest period
 - Sound notification plays when timer completes
 - Timer automatically transitions to rest period when enabled
+- Toggle between light and dark themes with the sun/moon icon
 
 ## Component Structure
 
