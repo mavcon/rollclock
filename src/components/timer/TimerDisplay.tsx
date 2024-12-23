@@ -23,7 +23,7 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
         value={value}
         onChange={(e) => onEdit(e.target.value)}
         onBlur={onEditEnd}
-        className={`w-full bg-transparent text-center outline-none font-mono text-[min(30vw,60vh)] leading-[1] font-bold p-0 m-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+        className={`w-full bg-transparent text-center outline-none font-mono text-[min(30vw,60vh)] portrait:text-[clamp(183px,30vw,183px)] landscape:text-[min(30vw,60vh)] leading-[1] font-bold p-0 m-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
           isResting ? 'text-blue-300' : 'text-app-text-primary-light dark:text-app-text-primary-dark'
         }`}
         min="0"
@@ -37,7 +37,7 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
     <div className="flex items-center justify-center h-full">
       <span
         onClick={() => !isRunning && onEditStart()}
-        className={`cursor-pointer select-none font-mono text-[min(30vw,60vh)] leading-[1] font-bold ${
+        className={`cursor-pointer select-none font-mono text-[min(30vw,60vh)] portrait:text-[clamp(183px,30vw,183px)] landscape:text-[min(30vw,60vh)] leading-[1] font-bold ${
           isFlashing ? 'animate-flash' : ''
         } ${isResting ? 'text-blue-300' : 'text-app-text-primary-light dark:text-app-text-primary-dark'}`}
       >

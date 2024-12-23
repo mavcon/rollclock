@@ -64,8 +64,34 @@ const Timer: React.FC = () => {
     }
   };
 
+  // Add effect to handle mobile viewport height
+  useEffect(() => {
+    const setVH = () => {
+      // Get the actual viewport height
+      const vh = window.innerHeight * 0.01;
+      // Set the value as a CSS custom property
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+
+    // Set the height initially
+    setVH();
+
+    // Update the height on resize and orientation change
+    window.addEventListener('resize', setVH);
+    window.addEventListener('orientationchange', setVH);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', setVH);
+      window.removeEventListener('orientationchange', setVH);
+    };
+  }, []);
+
   return (
-    <div className="bg-app-bg-light dark:bg-app-bg-dark text-app-text-primary-light dark:text-app-text-primary-dark h-screen w-screen overflow-hidden p-4">
+    <div 
+      className="bg-app-bg-light dark:bg-app-bg-dark text-app-text-primary-light dark:text-app-text-primary-dark w-screen overflow-hidden p-4"
+      style={{ height: 'calc(var(--vh, 1vh) * 100)' }}
+    >
       <div className="h-full w-full flex flex-col gap-2">
         {/* Top buttons - PresetTimes (15%) */}
         <div className="h-[14%] w-full">
@@ -94,74 +120,106 @@ const Timer: React.FC = () => {
 
         {/* Countdown and arrows section (65%) */}
         <div className="h-[65%] w-full">
-          <div className="h-full w-full">
-            <div className="h-full w-full grid grid-cols-[auto_1fr_auto] gap-2">
-              <div className="flex flex-col h-full">
-                <button
-                  onClick={() => adjustTime('minutes', true)}
-                  disabled={isRunning}
-                  className="h-[50%] text-[min(6vw,12vh)] text-app-text-secondary-light dark:text-app-text-secondary-dark hover:text-app-text-primary-light dark:hover:text-app-text-primary-dark transition-colors disabled:opacity-50 flex items-center justify-center"
-                >
-                  ▲
-                </button>
-                <button
-                  onClick={() => adjustTime('minutes', false)}
-                  disabled={isRunning}
-                  className="h-[50%] text-[min(6vw,12vh)] text-app-text-secondary-light dark:text-app-text-secondary-dark hover:text-app-text-primary-light dark:hover:text-app-text-primary-dark transition-colors disabled:opacity-50 flex items-center justify-center"
-                >
-                  ▼
-                </button>
-              </div>
+          <div className="font-mono landscape:grid landscape:grid-cols-[auto_minmax(0,1fr)_min-content_minmax(0,1fr)_auto] portrait:grid portrait:grid-rows-[1fr_0_1fr] portrait:gap-0 landscape:gap-2 items-center justify-items-center h-full w-full portrait:-space-y-8">
+            <div className="landscape:flex landscape:flex-col portrait:hidden h-full landscape:justify-start">
+              <button
+                onClick={() => adjustTime('minutes', true)}
+                disabled={isRunning}
+                className="h-[50%] text-[min(6vw,12vh)] text-app-text-secondary-light dark:text-app-text-secondary-dark hover:text-app-text-primary-light dark:hover:text-app-text-primary-dark transition-colors disabled:opacity-50 flex items-center justify-center"
+              >
+                ▲
+              </button>
+              <button
+                onClick={() => adjustTime('minutes', false)}
+                disabled={isRunning}
+                className="h-[50%] text-[min(6vw,12vh)] text-app-text-secondary-light dark:text-app-text-secondary-dark hover:text-app-text-primary-light dark:hover:text-app-text-primary-dark transition-colors disabled:opacity-50 flex items-center justify-center"
+              >
+                ▼
+              </button>
+            </div>
 
-              <div className="font-mono grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center justify-items-center h-full w-full">
-                <div className="w-full flex justify-end">
-                  <TimerDisplay
-                    value={Math.floor(time / 60)}
-                    isEditing={isEditingMinutes}
-                    onEdit={(value) => updateTime('minutes', value)}
-                    onEditStart={() => setIsEditingMinutes(true)}
-                    onEditEnd={() => setIsEditingMinutes(false)}
-                    isRunning={isRunning}
-                    inputRef={minutesInputRef}
-                    max={99}
-                    isResting={isResting}
-                    isFlashing={false}
-                  />
-                </div>
-                <span className={`text-[min(30vw,60vh)] leading-[1] font-bold ${isResting ? 'text-blue-300' : ''}`}>:</span>
-                <div className="w-full flex justify-start">
-                  <TimerDisplay
-                    value={time % 60}
-                    isEditing={isEditingSeconds}
-                    onEdit={(value) => updateTime('seconds', value)}
-                    onEditStart={() => setIsEditingSeconds(true)}
-                    onEditEnd={() => setIsEditingSeconds(false)}
-                    isRunning={isRunning}
-                    inputRef={secondsInputRef}
-                    max={59}
-                    isResting={isResting}
-                    isFlashing={isLastTenSeconds}
-                    isSeconds={true}
-                  />
-                </div>
-              </div>
+            <div className="w-full flex landscape:justify-end portrait:justify-center portrait:gap-4">
+              <button
+                onClick={() => adjustTime('minutes', true)}
+                disabled={isRunning}
+                className="portrait:block landscape:hidden text-[min(6vw,12vh)] text-app-text-secondary-light dark:text-app-text-secondary-dark hover:text-app-text-primary-light dark:hover:text-app-text-primary-dark transition-colors disabled:opacity-50 flex items-center justify-center"
+              >
+                ▲
+              </button>
+              <TimerDisplay
+                value={Math.floor(time / 60)}
+                isEditing={isEditingMinutes}
+                onEdit={(value) => updateTime('minutes', value)}
+                onEditStart={() => setIsEditingMinutes(true)}
+                onEditEnd={() => setIsEditingMinutes(false)}
+                isRunning={isRunning}
+                inputRef={minutesInputRef}
+                max={99}
+                isResting={isResting}
+                isFlashing={false}
+              />
+              <button
+                onClick={() => adjustTime('minutes', false)}
+                disabled={isRunning}
+                className="portrait:block landscape:hidden text-[min(6vw,12vh)] text-app-text-secondary-light dark:text-app-text-secondary-dark hover:text-app-text-primary-light dark:hover:text-app-text-primary-dark transition-colors disabled:opacity-50 flex items-center justify-center"
+              >
+                ▼
+              </button>
+            </div>
 
-              <div className="flex flex-col h-full">
-                <button
-                  onClick={() => adjustTime('seconds', true)}
-                  disabled={isRunning}
-                  className="h-[50%] text-[min(6vw,12vh)] text-app-text-secondary-light dark:text-app-text-secondary-dark hover:text-app-text-primary-light dark:hover:text-app-text-primary-dark transition-colors disabled:opacity-50 flex items-center justify-center"
-                >
-                  ▲
-                </button>
-                <button
-                  onClick={() => adjustTime('seconds', false)}
-                  disabled={isRunning}
-                  className="h-[50%] text-[min(6vw,12vh)] text-app-text-secondary-light dark:text-app-text-secondary-dark hover:text-app-text-primary-light dark:hover:text-app-text-primary-dark transition-colors disabled:opacity-50 flex items-center justify-center"
-                >
-                  ▼
-                </button>
+            <div className="flex items-center justify-center h-full w-full">
+              <div className="aspect-square flex items-center justify-center">
+                <span className={`text-[min(30vw,60vh)] portrait:text-[min(22.5vw,25vh)] leading-[1] font-bold font-mono landscape:translate-y-[-9%] portrait:rotate-90 portrait:origin-[75%_center] ${
+                  isResting ? 'text-blue-300' : 'text-app-text-primary-light dark:text-app-text-primary-dark'
+                }`}>:</span>
               </div>
+            </div>
+
+            <div className="w-full flex landscape:justify-start portrait:justify-center portrait:gap-4">
+              <button
+                onClick={() => adjustTime('seconds', true)}
+                disabled={isRunning}
+                className="portrait:block landscape:hidden text-[min(6vw,12vh)] text-app-text-secondary-light dark:text-app-text-secondary-dark hover:text-app-text-primary-light dark:hover:text-app-text-primary-dark transition-colors disabled:opacity-50 flex items-center justify-center"
+              >
+                ▲
+              </button>
+              <TimerDisplay
+                value={time % 60}
+                isEditing={isEditingSeconds}
+                onEdit={(value) => updateTime('seconds', value)}
+                onEditStart={() => setIsEditingSeconds(true)}
+                onEditEnd={() => setIsEditingSeconds(false)}
+                isRunning={isRunning}
+                inputRef={secondsInputRef}
+                max={59}
+                isResting={isResting}
+                isFlashing={isLastTenSeconds}
+                isSeconds={true}
+              />
+              <button
+                onClick={() => adjustTime('seconds', false)}
+                disabled={isRunning}
+                className="portrait:block landscape:hidden text-[min(6vw,12vh)] text-app-text-secondary-light dark:text-app-text-secondary-dark hover:text-app-text-primary-light dark:hover:text-app-text-primary-dark transition-colors disabled:opacity-50 flex items-center justify-center"
+              >
+                ▼
+              </button>
+            </div>
+
+            <div className="landscape:flex landscape:flex-col portrait:hidden h-full landscape:justify-start">
+              <button
+                onClick={() => adjustTime('seconds', true)}
+                disabled={isRunning}
+                className="h-[50%] text-[min(6vw,12vh)] text-app-text-secondary-light dark:text-app-text-secondary-dark hover:text-app-text-primary-light dark:hover:text-app-text-primary-dark transition-colors disabled:opacity-50 flex items-center justify-center"
+              >
+                ▲
+              </button>
+              <button
+                onClick={() => adjustTime('seconds', false)}
+                disabled={isRunning}
+                className="h-[50%] text-[min(6vw,12vh)] text-app-text-secondary-light dark:text-app-text-secondary-dark hover:text-app-text-primary-light dark:hover:text-app-text-primary-dark transition-colors disabled:opacity-50 flex items-center justify-center"
+              >
+                ▼
+              </button>
             </div>
           </div>
         </div>
@@ -230,7 +288,7 @@ const Timer: React.FC = () => {
                   className={`h-full w-full rounded-[4px] text-white text-[min(3.4vw,8vh)] font-medium transition-colors disabled:opacity-50 flex items-center justify-center ${
                     isRunning
                       ? "bg-app-danger-primary hover:bg-app-danger-hover"
-                      : "bg-app-success-primary hover:bg-app-success-hover"
+                      : "bg-app-success-primary hover:bg-success-hover"
                   }`}
                 >
                   {isRunning ? "STOP" : "START"}
